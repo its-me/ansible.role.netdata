@@ -1,0 +1,38 @@
+---
+#
+
+
+#
+- block:
+  - name: create registry directory
+    file:
+      path: /var/lib/netdata/registry
+      owner: netdata
+      group: netdata
+      mode: 0750
+      state: directory
+    when: netdata_registry != False
+
+  - name: edit netdata config
+    template:
+      src: netdata.conf.j2
+      dest: /etc/netdata/netdata.conf
+    notify: restart netdata
+
+  - name: edit nginx config
+    template:
+      src: nginx.j2
+      dest: /etc/nginx/sites-available/netdata
+      mode: 0640
+    notify: check nginx
+    when: netdata_registry == inventory_hostname
+
+  - name: create nginx link
+    file:
+      src: /etc/nginx/sites-available/netdata
+      dest: /etc/nginx/sites-enabled/netdata
+      state: link
+    notify: check nginx
+    when: netdata_registry == inventory_hostname
+
+  become: yes

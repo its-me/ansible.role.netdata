@@ -1,0 +1,26 @@
+# NetData Configuration
+
+# The current full configuration can be retrieved from the running
+# server at the URL
+#
+#   http://localhost:19999/netdata.conf
+#
+# for example:
+#
+#   wget -O /etc/netdata/netdata.conf http://localhost:19999/netdata.conf
+#
+
+[global]
+	run as user = netdata
+	web files owner = root
+	web files group = netdata
+    access log = none
+{% if netdata_registry != False %}
+[registry]
+    {% if netdata_registry == inventory_hostname %}
+    enabled = yes
+    {% else %}
+    enabled = no
+    {% endif %}
+    registry to announce = {{ netdata_registry_to_annonce }}
+{% endif %}

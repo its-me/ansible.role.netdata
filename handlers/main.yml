@@ -1,0 +1,19 @@
+---
+
+
+- name: restart netdata
+  become: yes
+  service:
+    name: netdata
+    state: restarted
+
+- name: check nginx
+  become: yes
+  command: '/usr/sbin/nginx -t'
+  notify: restart nginx
+
+- name: restart nginx
+  become: yes
+  service:
+    name: nginx
+    state: restarted
